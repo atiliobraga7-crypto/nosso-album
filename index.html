@@ -336,10 +336,9 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
 </div>
 
 <audio id="bgAudio" loop style="display:none"></audio>
-<div id="ytPlayerContainer"></div>
+<div id="ytPlayerContainer" style="display:none"></div>
 
 <script>
-// Mantém os slots limpos para preenchimento manual via navegador
 const DEF_PHOTOS=[
   {date:"nosso primeiro encontro",caption:"Tudo começou aqui... 🌸",src:null},
   {date:"uma aventura juntos",caption:"Cada viagem é melhor do seu lado 🌍",src:null},
@@ -347,9 +346,9 @@ const DEF_PHOTOS=[
   {date:"para sempre lembrar",caption:"Esse sorriso seu é o meu favorito 🥰",src:null}
 ];
 const DEF_TL=[
-  {date:"03/02/2024",text:"O dia em que tudo mudou. Nossa primeira conversa, olhares, risos."},
+  {date:"o nosso início",text:"O dia em que tudo mudou. Nossa primeira conversa, olhares, risos."},
   {date:"primeira vez juntos",text:"A sensação de que estava em casa do seu lado."},
-  {date:"aventuras e descobertas",text:"Cada lugar fica especial quando você está comigo."},
+  {date:"aventuras e descobris",text:"Cada lugar fica especial quando você está comigo."},
   {date:"hoje e sempre",text:"Construindo memórias que durarão para sempre."}
 ];
 const DEF_QUIZ=[
@@ -360,9 +359,8 @@ const DEF_QUIZ=[
 ];
 
 let photos,cfg,timeline,quiz,editIdx=null,pendingSrc=null,tlEditIdx=null;
-let ssIdx=0,ssTimer=null,musicPlaying=false;
+let ssIdx=0,ssTimer=null,musicPlaying=false,ytPlayer=null;
 let qIdx=0,answered=false;
-let ytPlayer=null;
 
 function load(){
   try{photos=JSON.parse(localStorage.getItem('v2_photos'))||DEF_PHOTOS}catch(e){photos=[...DEF_PHOTOS]}
@@ -378,9 +376,9 @@ function load(){
   cfg.secret=cfg.secret||'"Você é o meu lar. Onde você estiver, é onde eu quero estar."';
   cfg.secretSig=cfg.secretSig||'— para sempre seu ♥';
   
-  // DATA DE NAMORO E ID DO YOUTUBE PADRONIZADOS
+  // Informações inseridas aqui como padrão inicial fixo
   cfg.date=cfg.date||'2024-02-03';
-  cfg.music=cfg.music||'r73ANL4ecnE'; 
+  cfg.music=cfg.music||'r73ANL4ecnE';
 }
 
 function save(){
@@ -421,12 +419,7 @@ function openEnvelope(){
     applyUI();
     showPwaBanner();
     startCounterLoop();
-    
-    if(ytPlayer && typeof ytPlayer.playVideo === 'function') {
-        ytPlayer.playVideo();
-        musicPlaying=true;
-        document.getElementById('musicFab').classList.add('playing');
-    }
+    initAudio();
   },1200);
 }
 
@@ -573,18 +566,6 @@ function revealSecret(){
   msg.classList.add('show');
 }
 
-function applyUI(){
-  document.getElementById('introName').textContent=cfg.name;
-  document.getElementById('albumTitle').textContent=cfg.title;
-  document.getElementById('albumSub').textContent=cfg.sub;
-  document.getElementById('loveText').textContent=cfg.msg;
-  document.getElementById('loveSig').textContent=cfg.sig;
-  renderTimeline();
-  renderPhotos();
-  renderQuiz();
-  initMusic();
-}
-
 function openCfg(){
   document.getElementById('cfgName').value=cfg.name;
   document.getElementById('cfgTitle').value=cfg.title;
@@ -611,94 +592,107 @@ function saveCfg(){
   save();applyUI();updateCounter();closeCfg();
 }
 
+function applyUI(){
+  document.getElementById('introName').textContent=cfg.name;
+  document.getElementById('albumTitle').textContent=cfg.title;
+  document.getElementById('albumSub').textContent=cfg.sub;
+  document.getElementById('loveText').textContent=cfg.msg;
+  document.getElementById('loveSig').textContent=cfg.sig;
+}
+
 function scrollToSection(id){
   const el=document.getElementById(id);
-  if(el){el.scrollIntoView({behavior:'smooth',block:'start'})}
+  if(el) el.scrollIntoView({behavior:'smooth'});
 }
+
 function updateNavActive(btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-function initMusic(){
+/* ── AUDIO INTEGRATION ── */
+function initAudio(){
   if(!cfg.music) return;
-  const container=document.getElementById('ytPlayerContainer');
-  container.innerHTML='<div id="player"></div>';
-  
-  if(!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  const isYt=cfg.music.includes('youtube.com') || cfg.music.includes('youtu.be') || cfg.music.length < 15;
+  if(isYt){
+    let videoId=cfg.music;
+    if(cfg.music.includes('v=')) videoId=cfg.music.split('v=')[1].split('&')[0];
+    else if(cfg.music.includes('youtu.be/')) videoId=cfg.music.split('youtu.be/')[1].split('?')[0];
+    
+    window.onYouTubeIframeAPIReady = () => {
+      ytPlayer = new YT.Player('ytPlayerContainer', {
+        height: '0', width: '0', videoId: videoId,
+        playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': videoId },
+        events: { 'onReady': (e) => { e.target.playVideo(); playAudioUI(true); } }
+      });
+    };
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
   } else {
-      onYouTubeIframeAPIReady();
+    const aud=document.getElementById('bgAudio');
+    aud.src=cfg.music;
+    aud.play().then(()=>playAudioUI(true)).catch(()=>{});
   }
 }
-
-function onYouTubeIframeAPIReady() {
-  if(!cfg.music) return;
-  ytPlayer = new YT.Player('player', {
-    height: '0',
-    width: '0',
-    videoId: cfg.music,
-    playerVars: {
-      'autoplay': 0,
-      'controls': 0,
-      'loop': 1,
-      'playlist': cfg.music
-    },
-    events: {
-      'onReady': onPlayerReady
-    }
-  });
-}
-
-function onPlayerReady(event) {}
 
 function toggleMusic(){
-  if(!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
-  const fab=document.getElementById('musicFab');
-  if(musicPlaying){
-    ytPlayer.pauseVideo();
-    fab.classList.remove('playing');
-  }else{
-    ytPlayer.playVideo();
-    fab.classList.add('playing');
+  const aud=document.getElementById('bgAudio');
+  if(ytPlayer && typeof ytPlayer.getPlayerState === 'function'){
+    if(musicPlaying){ ytPlayer.pauseVideo(); playAudioUI(false); }
+    else { ytPlayer.playVideo(); playAudioUI(true); }
+  } else if(aud.src) {
+    if(musicPlaying){ aud.pause(); playAudioUI(false); }
+    else { aud.play(); playAudioUI(true); }
   }
-  musicPlaying=!musicPlaying;
 }
 
+function playAudioUI(play){
+  const fab=document.getElementById('musicFab');
+  musicPlaying=play;
+  if(play){ fab.classList.add('playing'); fab.textContent='🎵'; }
+  else { fab.classList.remove('playing'); fab.textContent='🔇'; }
+}
+
+/* ── SLIDESHOW SYSTEM ── */
 function startSlideshow(){
-  const valid=photos.filter(p=>p.src);
-  if(!valid.length)return;
+  const validPhotos = photos.filter(p=>p.src);
+  if(validPhotos.length===0){ alert('Adicione algumas fotos primeiro para iniciar o slide! ♥'); return; }
   ssIdx=0;
-  const overlay=document.getElementById('ssOverlay');
-  overlay.classList.add('open');
-  renderSlideshowContent();
+  document.getElementById('ssOverlay').classList.add('open');
+  showSSFrame(validPhotos);
+  ssTimer = setInterval(()=>{
+    ssIdx=(ssIdx+1)%validPhotos.length;
+    showSSFrame(validPhotos);
+  },3500);
 }
-function closeSlideshow(){
-  document.getElementById('ssOverlay').classList.remove('open');
-}
-function renderSlideshowContent(){
-  const valid=photos.filter(p=>p.src);
+
+function showSSFrame(list){
+  const item=list[ssIdx];
   const c=document.getElementById('ssContent');
-  const cap=document.getElementById('ssCaption');
+  c.innerHTML=`<img class="ss-img" src="${item.src}"/>`;
+  document.getElementById('ssCaption').textContent=item.cap||item.caption||'';
   const dots=document.getElementById('ssDots');
-  const p=valid[ssIdx];
-  c.innerHTML=`<img class="ss-img" src="${p.src}"/>`;
-  cap.textContent=(p.date?p.date+' — ':'')+(p.cap||p.caption||'');
   dots.innerHTML='';
-  valid.forEach((_,i)=>{
-    const b=document.createElement('button');
-    b.className='ss-dot'+(i===ssIdx?' active':'');
-    b.onclick=()=>{ssIdx=i;renderSlideshowContent()};
-    dots.appendChild(b);
+  list.forEach((_,i)=>{
+    const d=document.createElement('button');
+    d.className='ss-dot'+(i===ssIdx?' active':'');
+    d.onclick=()=>{ clearInterval(ssTimer); ssIdx=i; showSSFrame(list); };
+    dots.appendChild(d);
   });
+}
+
+function closeSlideshow(){
+  clearInterval(ssTimer);
+  document.getElementById('ssOverlay').classList.remove('open');
 }
 
 window.onload=()=>{
   load();
   spawnPetals();
+  renderTimeline();
+  renderPhotos();
+  renderQuiz();
 };
 </script>
 </body>
