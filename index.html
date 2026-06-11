@@ -1,279 +1,61 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-    <meta name="theme-color" content="#1a0010"/>
-    <meta name="apple-mobile-web-app-title" content="Nosso Álbum ♥"/>
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%233d001e'/><text y='75' font-size='70' x='15'>❤️</text></svg>"/>
-    <title>Nosso Álbum ♥</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-    <style>
-        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-        html{height:100%;overflow:hidden}
-        body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d0008;color:#fff}
-        .page{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease,transform .6s ease;z-index:1}
-        .page.hidden{opacity:0;pointer-events:none;transform:scale(1.04)}
-        #intro{background:radial-gradient(ellipse at 30% 40%,#3d001e 0%,#0d0008 70%);z-index:10}
-        .petals-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-        .petal{position:absolute;font-size:18px;animation:fall linear infinite;opacity:0}
-        @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:0}10%{opacity:0.8}90%{opacity:0.8}100%{transform:translateY(105vh) rotate(360deg);opacity:0}}
-        .envelope-wrap{position:relative;cursor:pointer;user-select:none}
-        .envelope{width:220px;height:160px;position:relative;animation:floatEnv 3s ease-in-out infinite}
-        @keyframes floatEnv{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        .env-bg{position:absolute;inset:0;background:#b31d3b;border-radius:4px;box-shadow:0 12px 28px rgba(0,0,0,0.5)}
-        .env-flap{position:absolute;top:0;left:0;width:0;height:0;border-left:110px solid transparent;border-right:110px solid transparent;border-top:90px solid #d92b4c;transform-origin:top;transition:transform 0.4s ease;z-index:3}
-        .env-pocket{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.15) 0%,transparent 50%),linear-gradient(225deg,rgba(0,0,0,0.15) 0%,transparent 50%);z-index:2}
-        .env-pocket::after{content:'';position:absolute;bottom:0;left:0;width:0;height:0;border-left:110px solid #a31432;border-right:110px solid #a31432;border-top:85px solid transparent;border-radius:0 0 4px 4px}
-        .letter-preview{position:absolute;top:15px;left:15px;right:15px;bottom:15px;background:#fff8f5;border-radius:2px;z-index:1;transition:transform 0.4s ease;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
-        .letter-preview p{color:#4a0e17;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;text-align:center;line-height:1.2}
-        .envelope-wrap:hover .env-flap{transform:rotateX(180deg);z-index:1}
-        .envelope-wrap:hover .letter-preview{transform:translateY(-50px);z-index:2}
-        .click-hint{margin-top:40px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);animation:pulse 2s infinite}
-        @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:0.8}}
-        #main-album{background:#0d0008;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-        .album-container{width:100%;max-width:450px;margin:0 auto;padding:40px 20px 120px 20px;display:flex;flex-direction:column;align-items:center}
-        header{text-align:center;margin-bottom:40px;width:100%}
-        h1{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:400;letter-spacing:1px;color:#f5e6eb;margin-bottom:8px}
-        .subtitle{font-size:12px;text-transform:uppercase;letter-spacing:4px;color:#b38f9d}
-        .counter-box{background:linear-gradient(145deg,#240413,#14010a);width:100%;border-radius:16px;padding:24px 15px;margin-bottom:40px;box-shadow:0 8px 24px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.03);text-align:center}
-        .counter-title{font-size:11px;text-transform:uppercase;letter-spacing:3px;color:#b38f9d;margin-bottom:16px}
-        .grid-timer{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-        .time-unit{display:flex;flex-direction:column;align-items:center}
-        .time-num{font-family:'Cormorant Garamond',serif;font-size:32px;color:#ffccd9;font-weight:600;line-height:1}
-        .time-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#8c6975;margin-top:6px}
-        .photo-stream{width:100%;display:flex;flex-direction:column;gap:35px}
-        .photo-card{background:#14010a;border-radius:12px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.02);transform:translateY(20px);opacity:0;transition:all 0.8s ease}
-        .photo-card.visible{transform:translateY(0);opacity:1}
-        .img-frame{position:relative;width:100%;padding-top:110%;overflow:hidden;background:#1a0310}
-        .img-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-        .card-caption{padding:18px 16px;text-align:center}
-        .card-caption p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:#f5e6eb;line-height:1.3}
-        .card-date{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#8c6975;margin-top:6px}
-        .music-player{position:fixed;bottom:25px;right:25px;z-index:100;display:flex;align-items:center}
-        .music-btn{width:48px;height:48px;border-radius:50%;background:#b31d3b;border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(179,29,59,0.4);transition:transform 0.2s}
-        .music-btn:active{transform:scale(0.95)}
-        .music-note{position:absolute;color:#ffccd9;font-size:12px;opacity:0;pointer-events:none;z-index:99}
-        @keyframes floatNote{0%{transform:translate(0,0) scale(0.5);opacity:0}20%{opacity:1}100%{transform:translate(-20px,-40px) scale(1.2);opacity:0}}
-    </style>
-</head>
-<body>
-
-    <!-- TELA 1: ENVELOPE DE INTRODUÇÃO -->
-    <div id="intro" class="page">
-        <div class="petals-bg" id="intro-petals"></div>
-        <div class="envelope-wrap" onclick="openAlbum()">
-            <div class="envelope">
-                <div class="env-bg"></div>
-                <div class="env-flap"></div>
-                <div class="letter-preview">
-                    <p>Para o meu<br>grande amor...<br>❤️</p>
-                </div>
-                <div class="env-pocket"></div>
-            </div>
-        </div>
-        <div class="click-hint">Clique para abrir</div>
-    </div>
-
-    <!-- TELA 2: ÁLBUM PRINCIPAL -->
-    <div id="main-album" class="page hidden">
-        <div class="petals-bg" id="album-petals"></div>
-        
-        <div class="album-container">
-            <header>
-                <h1>Nosso Álbum</h1>
-                <div class="subtitle">Para Sempre Juntos</div>
-            </header>
-
-            <!-- CONTADOR DE TEMPO -->
-            <div class="counter-box">
-                <div class="counter-title">Tempo de História</div>
-                <div class="grid-timer">
-                    <div class="time-unit"><span class="time-num" id="d-anos">00</span><span class="time-label">Anos</span></div>
-                    <div class="time-unit"><span class="time-num" id="d-meses">00</span><span class="time-label">Meses</span></div>
-                    <div class="time-unit"><span class="time-num" id="d-dias">00</span><span class="time-label">Dias</span></div>
-                    <div class="time-unit"><span class="time-num" id="d-horas">00</span><span class="time-label">Horas</span></div>
-                </div>
-            </div>
-
-            <!-- FLUXO DE FOTOS -->
-            <div class="photo-stream">
-                <div class="photo-card">
-                    <div class="img-frame"><img src="https://i.postimg.cc/m1c4NvKC/Whats-App-Image-2026-05-23-at-13-43-54.jpg" alt="Foto 1"/></div>
-                    <div class="card-caption">
-                        <p>Cada momento ao seu lado se torna inesquecível...</p>
-                        <div class="card-date">Momento Especial</div>
-                    </div>
-                </div>
-
-                <div class="photo-card">
-                    <div class="img-frame"><img src="https://i.postimg.cc/K3Kbr6dh/Whats-App-Image-2026-05-23-at-13-49-37.jpg" alt="Foto 2"/></div>
-                    <div class="card-caption">
-                        <p>A felicidade de compartilhar a vida com você.</p>
-                        <div class="card-date">Nossa Jornada</div>
-                    </div>
-                </div>
-
-                <div class="photo-card">
-                    <div class="img-frame"><img src="https://i.postimg.cc/hQJnbkHW/Whats-App-Image-2026-05-23-at-13-51-53.jpg" alt="Foto 3"/></div>
-                    <div class="card-caption">
-                        <p>O seu sorriso é o meu lugar favorito no mundo.</p>
-                        <div class="card-date">Amor Puro</div>
-                    </div>
-                </div>
-
-                <div class="photo-card">
-                    <div class="img-frame"><img src="https://i.postimg.cc/RJ3mQkjr/Whats-App-Image-2026-05-23-at-13-55-12.jpg" alt="Foto 4"/></div>
-                    <div class="card-caption">
-                        <p>Que o nosso "para sempre" seja exatamente assim.</p>
-                        <div class="card-date">Para Sempre</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PLAYER DE MÚSICA -->
-    <div class="music-player">
-        <button class="music-btn" id="play-toggle" onclick="toggleMusic()" style="display:none;">🎵</button>
-    </div>
-
-    <!-- PLAYER OCULTO DO YOUTUBE (Evita bloqueios e toca "Vem Pra Minha Vida") -->
-    <div id="yt-player" style="position:absolute;top:-9999px;left:-9999px;"></div>
-
-    <script>
-        // CONFIGURAÇÕES DIRETAS DO SITE
-        const DATA_INICIO = new Date("2024-02-03T00:00:00");
-        const VIDEO_ID = "r73ANL4ecnE"; // ID do YouTube para Henrique e Juliano - Vem pra minha vida
-
-        let ytPlayer = null;
-        let isPlaying = false;
-        let noteInterval = null;
-
-        // Injetar API do YouTube de forma segura
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('yt-player', {
-                height: '0', width: '0',
-                videoId: VIDEO_ID,
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': VIDEO_ID },
-                events: { 'onReady': () => { document.getElementById('play-toggle').style.display = 'flex'; } }
-            });
-        }
-
-        // Criar efeito de pétalas de rosas caindo
-        function createPetals(containerId) {
-            const container = document.getElementById(containerId);
-            const symbols = ['🌸', '❤️', '🌹', '✨'];
-            setInterval(() => {
-                if (document.getElementById(containerId).parentElement.classList.contains('hidden')) return;
-                const p = document.createElement('div');
-                p.className = 'petal';
-                p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random() * 3 + 4) + 's';
-                p.style.fontSize = (Math.random() * 10 + 14) + 'px';
-                container.appendChild(p);
-                setTimeout(() => p.remove(), 7000);
-            }, 450);
-        }
-
-        createPetals('intro-petals');
-        createPetals('album-petals');
-
-        // Abrir o Envelope e Iniciar tudo
-        function openAlbum() {
-            document.getElementById('intro').classList.add('hidden');
-            document.getElementById('main-album').classList.remove('hidden');
-            
-            // Iniciar o contador e animação dos cards
-            setInterval(updateCounter, 1000);
-            updateCounter();
-            setupScrollAnimation();
-
-            // Tenta dar play na música automaticamente
-            if(ytPlayer && typeof ytPlayer.playVideo === 'function') {
-                ytPlayer.playVideo();
-                isPlaying = true;
-                document.getElementById('play-toggle').innerText = '⏸️';
-                startNotes();
-            }
-        }
-
-        // Controle da música manualmente
-        function toggleMusic() {
-            if(!ytPlayer) return;
-            if(isPlaying) {
-                ytPlayer.pauseVideo();
-                document.getElementById('play-toggle').innerText = '🎵';
-                clearInterval(noteInterval);
-            } else {
-                ytPlayer.playVideo();
-                document.getElementById('play-toggle').innerText = '⏸️';
-                startNotes();
-            }
-            isPlaying = !isPlaying;
-        }
-
-        function startNotes() {
-            clearInterval(noteInterval);
-            noteInterval = setInterval(() => {
-                const b = document.getElementById('play-toggle');
-                const n = document.createElement('div');
-                n.className = 'music-note';
-                n.innerText = '♪';
-                n.style.left = '15px';
-                n.style.top = '15px';
-                n.style.animation = 'floatNote 2s ease-out forwards';
-                b.parentElement.appendChild(n);
-                setTimeout(() => n.remove(), 2000);
-            }, 600);
-        }
-
-        // Sistema de Cálculo de Tempo Preciso (Anos, Meses, Dias, Horas)
-        function updateCounter() {
-            const agora = new Date();
-            let anos = agora.getFullYear() - DATA_INICIO.getFullYear();
-            let meses = agora.getMonth() - DATA_INICIO.getMonth();
-            let dias = agora.getDate() - DATA_INICIO.getDate();
-            let horas = agora.getHours() - DATA_INICIO.getHours();
-
-            if (horas < 0) { horas += 24; dias--; }
-            if (dias < 0) {
-                const mesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0);
-                dias += mesAnterior.getDate();
-                meses--;
-            }
-            if (meses < 0) { meses += 12; anos--; }
-
-            document.getElementById('d-anos').innerText = String(anos).padStart(2, '0');
-            document.getElementById('d-meses').innerText = String(meses).padStart(2, '0');
-            document.getElementById('d-dias').innerText = String(dias).padStart(2, '0');
-            document.getElementById('d-horas').innerText = String(horas).padStart(2, '0');
-        }
-
-        // Revelar fotos suavemente ao rolar a página
-        function setupScrollAnimation() {
-            const cards = document.querySelectorAll('.photo-card');
-            const scrollContainer = document.getElementById('main-album');
-            
-            function checkScroll() {
-                cards.forEach(card => {
-                    const cardTop = card.getBoundingClientRect().top;
-                    if(cardTop < window.innerHeight * 0.85) {
-                        card.classList.add('visible');
-                    }
-                });
-            }
-            scrollContainer.addEventListener('scroll', checkScroll);
-            setTimeout(checkScroll, 300);
-        }
-    </script>
-</body>
-</html>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#1a0010"/>
+<meta name="apple-mobile-web-app-title" content="Nosso Álbum ♥"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e91e8c' rx='22'/><text y='.9em' font-size='70' x='12'>♥</text></svg>"/>
+<title>Nosso Álbum ♥</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d0008;color:#fff}
+/* ── PAGES ── */
+.page{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease,transform .6s ease;overflow:hidden}
+.page.hidden{opacity:0;pointer-events:none;transform:scale(1.04)}
+/* ── INTRO / ENVELOPE ── */
+#intro{background:radial-gradient(ellipse at 30% 40%,#3d001e 0%,#0d0008 70%);z-index:10}
+.petals-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.petal{position:absolute;font-size:18px;animation:fall linear infinite;opacity:0}
+@keyframes fall{0%{opacity:0;transform:translateY(-30px) rotate(0deg)}10%{opacity:.7}90%{opacity:.5}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+.envelope-wrap{position:relative;cursor:pointer;user-select:none}
+.envelope{width:220px;height:160px;position:relative;animation:floatEnv 3s ease-in-out infinite}
+@keyframes floatEnv{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.env-body{width:220px;height:160px;background:linear-gradient(160deg,#a50047,#7b0033);border-radius:8px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.env-body::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.08),transparent)}
+.env-flap{position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(160deg,#c2185b,#880e3f);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
+.envelope-wrap.open .env-flap{transform:rotateX(180deg)}
+.env-left{position:absolute;bottom:0;left:0;width:50%;height:90px;background:linear-gradient(135deg,#8b0038,#6a0028);clip-path:polygon(0 100%,100% 100%,100% 0)}
+.env-right{position:absolute;bottom:0;right:0;width:50%;height:90px;background:linear-gradient(225deg,#7b0033,#5c0020);clip-path:polygon(0 100%,0 0,100% 100%)}
+.env-heart{position:absolute;top:50%;left:50%;transform:translate(-50%,-30%);font-size:32px;animation:pulse 1.5s ease-in-out infinite}
+.env-card{position:absolute;width:190px;height:130px;background:linear-gradient(135deg,#fff0f5,#fff);border-radius:6px;top:10px;left:15px;display:flex;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(.25,.46,.45,.94);z-index:1}
+.envelope-wrap.open .env-card{transform:translateY(-110px)}
+.env-card-text{text-align:center;color:#c2185b;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;line-height:1.5;padding:10px}
+.intro-hint{margin-top:28px;font-size:13px;color:rgba(255,255,255,.45);letter-spacing:1.5px;text-transform:uppercase;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.45}50%{opacity:.9}}
+/* ── MAIN ALBUM ── */
+#album{background:#fff9fb;z-index:5;opacity:0;pointer-events:none;display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;align-items:flex-start;justify-content:flex-start}
+#album.show{opacity:1;pointer-events:auto}
+.album-inner{max-width:480px;margin:0 auto;padding:0 0 5rem}
+/* ── COVER ── */
+.cover{text-align:center;padding:3rem 1.5rem 1.5rem;background:linear-gradient(180deg,#fff0f5 0%,#fff9fb 100%)}
+.cover-hearts{font-size:22px;letter-spacing:12px;color:#e91e8c;animation:pulse 2s ease-in-out infinite;margin-bottom:1rem;display:block}
+.cover-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;color:#880e3f;line-height:1.15;margin-bottom:.35rem}
+.cover-sub{font-size:12px;color:#bbb;letter-spacing:2px;text-transform:uppercase}
+/* ── COUNTER ── */
+.counter{margin:1.25rem 1rem;background:#fff;border:1px solid #fce4ec;border-radius:20px;padding:1.25rem 1rem;text-align:center;box-shadow:0 4px 24px rgba(233,30,140,.06)}
+.ctr-label{font-size:11px;letter-spacing:2px;color:#f48fb1;text-transform:uppercase;margin-bottom:1rem}
+.ctr-grid{display:flex;justify-content:center;gap:8px}
+.c-item{flex:1;max-width:72px;background:#fff0f5;border-radius:12px;padding:10px 4px 8px}
+.c-num{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;color:#880e3f;line-height:1}
+.c-unit{display:block;font-size:10px;color:#f48fb1;margin-top:3px;letter-spacing:.5px}
+.ctr-since{font-size:11px;color:#ccc;margin-top:10px}
+/* ── TIMELINE ── */
+.timeline-section{padding:0 1rem;margin-bottom:.5rem}
+.sec-heading{text-align:center;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#f48fb1;margin:1.75rem 0 1.25rem}
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,#fce4ec,#f48fb1,#fce
