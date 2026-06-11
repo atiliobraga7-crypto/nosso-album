@@ -1,82 +1,89 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<title>Nosso Álbum ♥</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-/* Estilos unificados */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:#fff9fb;color:#555;padding-bottom:100px}
-.album-inner{max-width:480px;margin:0 auto;padding:2rem 1rem}
-.sec-heading{text-align:center;font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:#f48fb1;margin:2rem 0 1.5rem}
-.music-card{background:#fff;border-radius:20px;padding:1.5rem;border:1px solid #fce4ec;box-shadow:0 4px 20px rgba(233,30,140,.06);margin-bottom:1.5rem;text-align:center}
-.music-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:#880e3f;font-weight:600;margin-bottom:4px}
-.music-art{font-size:13px;color:#f48fb1;margin-bottom:15px}
-.music-dedic{font-family:'Cormorant Garamond',serif;font-size:15px;color:#555;font-style:italic;margin-bottom:15px;line-height:1.5}
-.music-btn{display:inline-block;padding:8px 20px;background:#e91e8c;color:#fff;border-radius:20px;text-decoration:none;font-size:13px}
-</style>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nosso Álbum ♥</title>
+    <!-- Inclua aqui o seu CSS original (contador, quiz, etc) -->
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #fff9fb; color: #555; padding-bottom: 50px; }
+        .album-inner { max-width: 480px; margin: 0 auto; padding: 2rem 1rem; }
+        .sec-heading { text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 16px; letter-spacing: 3px; text-transform: uppercase; color: #f48fb1; margin: 2rem 0 1.5rem; }
+        .music-card { background: #fff; border-radius: 20px; padding: 1.5rem; border: 1px solid #fce4ec; box-shadow: 0 4px 20px rgba(233,30,140,.06); margin-bottom: 1.5rem; text-align: center; }
+        .music-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #880e3f; font-weight: 600; margin-bottom: 4px; }
+        .music-art { font-size: 13px; color: #f48fb1; margin-bottom: 15px; }
+        .music-dedic { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: #555; font-style: italic; margin-bottom: 15px; line-height: 1.5; }
+        .music-btn { display: inline-block; padding: 8px 20px; background: #e91e8c; color: #fff; border-radius: 20px; text-decoration: none; font-size: 13px; }
+    </style>
 </head>
 <body>
 
-<div class="album-inner">
-    <div class="sec-heading">✦ nossas músicas especiais ✦</div>
-    <div id="musicGrid"></div>
-</div>
+    <!-- AQUI VAI O SEU CONTEÚDO ORIGINAL (Contador, Quiz, etc) -->
 
-<script>
-// Dados das Músicas
-const DEF_MUSIC = [
-  {
-    title: "Certo Alguém", 
-    artist: "Lulu Santos", 
-    link: "https://youtu.be/4yUQN_UjdtY", 
-    dedic: "Dizem que a gente nunca sabe quando o destino vai cruzar o nosso caminho, mas com você foi diferente. Você chegou como na música: sem avisar, quase um acaso, mas se tornou a certeza que eu precisava. Hoje, você é o 'certo alguém' que faz qualquer dia cinza ganhar cor. Obrigado por ser essa música que não para de tocar no meu pensamento....EU TE AMO AMOR ❤"
-  },
-  {
-    title: "Mulher Maravilha", 
-    artist: "Zé Neto & Cristiano", 
-    link: "https://youtu.be/Fzmvv8fSyQs", 
-    dedic: "Às vezes eu paro para te observar e penso em como a sorte sorriu para mim quando te encontrou. Você tem essa força que domina qualquer lugar e esse jeito que desarma qualquer um dos meus problemas. Não preciso de histórias de ficção quando tenho você na vida real, superando todos os obstáculos com esse sorriso. Você é, sem dúvida, a minha Mulher Maravilha."
-  },
-  {
-    title: "Que Sorte a Nossa", 
-    artist: "Matheus & Kauan", 
-    link: "https://youtu.be/BkpqU3gdjlw", 
-    dedic: "Sabe aquela música que a gente ouve e parece que foi escrita para nós? 'Que Sorte a Nossa' é exatamente o que eu sinto. É uma sorte imensa ter você na minha vida, dividir meus dias e construir nossa história. Você é a minha melhor escolha, hoje e sempre. Te amo!"
-  },
-  {
-    title: "Pra Sempre Com Você", 
-    artist: "Jorge & Mateus", 
-    link: "https://youtu.be/VWRkQARH-9o", 
-    dedic: "Olhando para os nossos dois anos de história, percebo que cada momento nos preparou para o que queremos viver daqui para frente. Não é apenas sobre estar perto, é sobre a certeza de querer construir tudo ao seu lado. Como diz a música, é 'pra sempre com você'. Obrigado por ser meu porto seguro e por caminhar comigo. Feliz Dia dos Namorados!"
-  },
-  {
-    title: "Na Hora da Raiva", 
-    artist: "Jorge & Mateus", 
-    link: "https://youtu.be/X8jD3F9PI7Q", 
-    dedic: "Entre os desentendimentos e as certezas, a maior delas é que eu sempre vou te escolher. Como diz a música: 'na hora da raiva, a gente fala o que não quer, mas na hora do amor, você é a minha mulher'. Te amo, feliz Dia dos Namorados!"
-  }
-];
+    <div class="album-inner">
+        <div class="sec-heading">✦ nossas músicas especiais ✦</div>
+        <div id="musicGrid"></div>
+    </div>
 
-// Função de exibição
-function renderMusic() {
-    const grid = document.getElementById('musicGrid');
-    grid.innerHTML = DEF_MUSIC.map(m => `
-        <div class="music-card">
-            <div class="music-title">${m.title}</div>
-            <div class="music-art">${m.artist}</div>
-            <div class="music-dedic">${m.dedic}</div>
-            <a href="${m.link}" target="_blank" class="music-btn">Ouvir agora</a>
-        </div>
-    `).join('');
-}
+    <script>
+        // Dados das Músicas com links corrigidos
+        const DEF_MUSIC = [
+            {
+                title: "Certo Alguém", 
+                artist: "Lulu Santos", 
+                link: "https://www.youtube.com/watch?v=4yUQN_UjdtY", 
+                dedic: "Dizem que a gente nunca sabe quando o destino vai cruzar o nosso caminho, mas com você foi diferente. Você chegou como na música: sem avisar, quase um acaso, mas se tornou a certeza que eu precisava. Hoje, você é o 'certo alguém' que faz qualquer dia cinza ganhar cor. Obrigado por ser essa música que não para de tocar no meu pensamento....EU TE AMO AMOR ❤"
+            },
+            {
+                title: "Mulher Maravilha", 
+                artist: "Zé Neto & Cristiano", 
+                link: "https://www.youtube.com/watch?v=Fzmvv8fSyQs", 
+                dedic: "Às vezes eu paro para te observar e penso em como a sorte sorriu para mim quando te encontrou. Você tem essa força que domina qualquer lugar e esse jeito que desarma qualquer um dos meus problemas. Não preciso de histórias de ficção quando tenho você na vida real, superando todos os obstáculos com esse sorriso. Você é, sem dúvida, a minha Mulher Maravilha."
+            },
+            {
+                title: "Que Sorte a Nossa", 
+                artist: "Matheus & Kauan", 
+                link: "https://www.youtube.com/watch?v=BkpqU3gdjlw", 
+                dedic: "Sabe aquela música que a gente ouve e parece que foi escrita para nós? 'Que Sorte a Nossa' é exatamente o que eu sinto. É uma sorte imensa ter você na minha vida, dividir meus dias e construir nossa história. Você é a minha melhor escolha, hoje e sempre. Te amo!"
+            },
+            {
+                title: "Pra Sempre Com Você", 
+                artist: "Jorge & Mateus", 
+                link: "https://www.youtube.com/watch?v=VWRkQARH-9o", 
+                dedic: "Olhando para os nossos dois anos de história, percebo que cada momento nos preparou para o que queremos viver daqui para frente. Não é apenas sobre estar perto, é sobre a certeza de querer construir tudo ao seu lado. Como diz a música, é 'pra sempre com você'. Obrigado por ser meu porto seguro e por caminhar comigo. Feliz Dia dos Namorados!"
+            },
+            {
+                title: "Na Hora da Raiva", 
+                artist: "Jorge & Mateus", 
+                link: "https://www.youtube.com/watch?v=X8jD3F9PI7Q", 
+                dedic: "Entre os desentendimentos e as certezas, a maior delas é que eu sempre vou te escolher. Como diz a música: 'na hora da raiva, a gente fala o que não quer, mas na hora do amor, você é a minha mulher'. Te amo, feliz Dia dos Namorados!"
+            }
+        ];
 
-// Executa ao carregar
-window.onload = function() {
-    renderMusic();
-};
-</script>
+        // Função para renderizar as músicas
+        function renderMusic() {
+            const grid = document.getElementById('musicGrid');
+            grid.innerHTML = DEF_MUSIC.map(m => `
+                <div class="music-card">
+                    <div class="music-title">${m.title}</div>
+                    <div class="music-art">${m.artist}</div>
+                    <div class="music-dedic">${m.dedic}</div>
+                    <a href="${m.link}" target="_blank" class="music-btn">Ouvir agora</a>
+                </div>
+            `).join('');
+        }
+
+        // Integração no window.onload original
+        window.onload = () => {
+            // Suas chamadas originais:
+            // load(); 
+            // spawnPetals();
+            // renderTimeline();
+            // renderQuiz();
+            
+            // Nova chamada:
+            renderMusic();
+        };
+    </script>
 </body>
 </html>
