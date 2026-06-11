@@ -3,285 +3,67 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="theme-color" content="#1a0010"/>
-<meta name="apple-mobile-web-app-title" content="Nosso Álbum ♥"/>
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e91e8c' rx='22'/><text y='.9em' font-size='70' x='12'>♥</text></svg>"/>
 <title>Nosso Álbum ♥</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
+/* Estilos unificados */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{height:100%;overflow:hidden}
-body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d0008;color:#fff}
-.page{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease,transform .6s ease;overflow:hidden}
-.page.hidden{opacity:0;pointer-events:none;transform:scale(1.04)}
-#intro{background:radial-gradient(ellipse at 30% 40%,#3d001e 0%,#0d0008 70%);z-index:10}
-.petals-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.petal{position:absolute;font-size:18px;animation:fall linear infinite;opacity:0}
-@keyframes fall{0%{opacity:0;transform:translateY(-30px) rotate(0deg)}10%{opacity:.7}90%{opacity:.5}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
-.envelope-wrap{position:relative;cursor:pointer;user-select:none}
-.envelope{width:220px;height:160px;position:relative;animation:floatEnv 3s ease-in-out infinite}
-@keyframes floatEnv{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-.env-body{width:220px;height:160px;background:linear-gradient(160deg,#a50047,#7b0033);border-radius:8px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.env-body::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.08),transparent)}
-.env-flap{position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(160deg,#c2185b,#880e3f);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
-.envelope-wrap.open .env-flap{transform:rotateX(180deg)}
-.env-left{position:absolute;bottom:0;left:0;width:50%;height:90px;background:linear-gradient(135deg,#8b0038,#6a0028);clip-path:polygon(0 100%,100% 100%,100% 0)}
-.env-right{position:absolute;bottom:0;right:0;width:50%;height:90px;background:linear-gradient(225deg,#7b0033,#5c0020);clip-path:polygon(0 100%,0 0,100% 100%)}
-.env-heart{position:absolute;top:50%;left:50%;transform:translate(-50%,-30%);font-size:32px;animation:pulse 1.5s ease-in-out infinite}
-.env-card{position:absolute;width:190px;height:130px;background:linear-gradient(135deg,#fff0f5,#fff);border-radius:6px;top:10px;left:15px;display:flex;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(.25,.46,.45,.94);z-index:1}
-.envelope-wrap.open .env-card{transform:translateY(-110px)}
-.env-card-text{text-align:center;color:#c2185b;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;line-height:1.5;padding:10px}
-.intro-hint{margin-top:28px;font-size:13px;color:rgba(255,255,255,.45);letter-spacing:1.5px;text-transform:uppercase;animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:.45}50%{opacity:.9}}
-#album{background:#fff9fb;z-index:5;opacity:0;pointer-events:none;display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;align-items:flex-start;justify-content:flex-start}
-#album.show{opacity:1;pointer-events:auto}
-.album-inner{max-width:480px;margin:0 auto;padding:0 0 5rem}
-.cover{text-align:center;padding:3rem 1.5rem 1.5rem;background:linear-gradient(180deg,#fff0f5 0%,#fff9fb 100%)}
-.cover-hearts{font-size:22px;letter-spacing:12px;color:#e91e8c;animation:pulse 2s ease-in-out infinite;margin-bottom:1rem;display:block}
-.cover-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;color:#880e3f;line-height:1.15;margin-bottom:.35rem}
-.cover-sub{font-size:12px;color:#bbb;letter-spacing:2px;text-transform:uppercase}
-.counter{margin:1.25rem 1rem;background:#fff;border:1px solid #fce4ec;border-radius:20px;padding:1.25rem 1rem;text-align:center;box-shadow:0 4px 24px rgba(233,30,140,.06)}
-.ctr-label{font-size:11px;letter-spacing:2px;color:#f48fb1;text-transform:uppercase;margin-bottom:1rem}
-.ctr-grid{display:flex;justify-content:center;gap:8px}
-.c-item{flex:1;max-width:72px;background:#fff0f5;border-radius:12px;padding:10px 4px 8px}
-.c-num{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;color:#880e3f;line-height:1}
-.c-unit{display:block;font-size:10px;color:#f48fb1;margin-top:3px;letter-spacing:.5px}
-.ctr-since{font-size:11px;color:#ccc;margin-top:10px}
-.timeline-section{padding:0 1rem;margin-bottom:.5rem}
+body{font-family:'DM Sans',sans-serif;background:#fff9fb;color:#555}
+.album-inner{max-width:480px;margin:0 auto;padding-bottom:5rem}
 .sec-heading{text-align:center;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#f48fb1;margin:1.75rem 0 1.25rem}
-.timeline{position:relative;padding-left:28px}
-.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,#fce4ec,#f48fb1,#fce4ec)}
-.tl-item{position:relative;margin-bottom:1.25rem;animation:fadeUp .6s ease both}
-.tl-dot{position:absolute;left:-23px;top:4px;width:14px;height:14px;border-radius:50%;background:#e91e8c;border:3px solid #fff0f5;box-shadow:0 0 0 2px #e91e8c}
-.tl-card{background:#fff;border:1px solid #fce4ec;border-radius:14px;padding:.875rem 1rem;box-shadow:0 2px 12px rgba(233,30,140,.05);cursor:pointer}
-.tl-date{font-size:11px;color:#ccc;margin-bottom:3px;letter-spacing:.5px}
-.tl-text{font-family:'Cormorant Garamond',serif;font-size:17px;color:#555;font-style:italic;line-height:1.5}
-.music-section{padding:0 1rem}
-.music-grid{display:flex;flex-direction:column;gap:1.25rem}
-.music-card{background:#fff;border-radius:20px;padding:1.5rem;border:1px solid #fce4ec;box-shadow:0 4px 20px rgba(233,30,140,.06);animation:fadeUp .7s ease both;text-align:center}
-.music-icon{font-size:32px;margin-bottom:10px;display:block}
+
+/* Estilos de Músicas */
+.music-grid{display:flex;flex-direction:column;gap:1.25rem;padding:0 1rem}
+.music-card{background:#fff;border-radius:20px;padding:1.5rem;border:1px solid #fce4ec;box-shadow:0 4px 20px rgba(233,30,140,.06);text-align:center}
 .music-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:#880e3f;font-weight:600;margin-bottom:4px}
 .music-art{font-size:13px;color:#f48fb1;margin-bottom:15px}
-.music-btn{display:inline-block;padding:8px 20px;background:#e91e8c;color:#fff;border-radius:20px;text-decoration:none;font-size:13px;font-weight:500;transition:transform .2s}
-.music-btn:hover{transform:scale(1.05)}
-.quiz-section{padding:0 1rem;margin-bottom:.5rem}
-.quiz-card{background:#fff;border:1px solid #fce4ec;border-radius:20px;padding:1.25rem;box-shadow:0 4px 20px rgba(233,30,140,.06)}
-.quiz-q{font-family:'Cormorant Garamond',serif;font-size:20px;color:#880e3f;font-style:italic;margin-bottom:1rem;line-height:1.4;text-align:center}
-.quiz-opts{display:flex;flex-direction:column;gap:8px}
-.quiz-opt{padding:.75rem 1rem;border:1.5px solid #fce4ec;border-radius:12px;background:#fff;font-size:14px;color:#555;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .2s}
-.quiz-opt:hover{border-color:#e91e8c;background:#fff0f5}
-.quiz-opt.correct{border-color:#4caf50;background:#f1f8f1;color:#2e7d32}
-.quiz-opt.wrong{border-color:#e91e8c;background:#fff0f5;color:#c2185b}
-.quiz-result{text-align:center;margin-top:1rem;font-family:'Cormorant Garamond',serif;font-size:18px;color:#880e3f;font-style:italic}
-.quiz-nav{display:flex;justify-content:center;gap:8px;margin-top:1rem}
-.quiz-dot{width:8px;height:8px;border-radius:50%;background:#fce4ec;transition:background .3s}
-.quiz-dot.active{background:#e91e8c}
-.quiz-next{margin-top:12px;width:100%;padding:.75rem;border:none;background:#e91e8c;border-radius:12px;color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer;display:none}
-.secret-section{padding:0 1rem}
-.secret-card{background:linear-gradient(135deg,#fff0f5,#fff);border:1px solid #fce4ec;border-radius:20px;padding:1.5rem;text-align:center;box-shadow:0 4px 20px rgba(233,30,140,.06);position:relative;overflow:hidden}
-.secret-lock{font-size:36px;cursor:pointer;transition:transform .3s;display:block;animation:pulse 2s ease-in-out infinite}
-.secret-lock:hover{transform:scale(1.1)}
-.secret-hint{font-size:13px;color:#f48fb1;margin-top:8px;letter-spacing:.5px}
-.secret-msg{display:none;margin-top:1rem}
-.secret-msg.show{display:block;animation:fadeIn .6s ease}
-.secret-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:#880e3f;font-style:italic;line-height:1.65}
-.secret-sig{font-size:13px;color:#e91e8c;margin-top:.75rem}
-.love-section{padding:0 1rem;margin-bottom:.5rem}
-.love-card{background:linear-gradient(135deg,#fce4ec,#fff0f6);border:1px solid #f8bbd0;border-radius:20px;padding:1.75rem 1.5rem;text-align:center}
-.love-text{font-family:'Cormorant Garamond',serif;font-size:21px;color:#880e3f;font-style:italic;line-height:1.65;margin-bottom:.75rem}
-.love-sig{font-size:13px;color:#e91e8c}
-.music-fab{position:fixed;bottom:80px;right:18px;width:50px;height:50px;border-radius:50%;background:#e91e8c;border:none;color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(233,30,140,.4);z-index:50;display:none;align-items:center;justify-content:center;transition:transform .2s}
-.music-fab.visible{display:flex}
-.music-fab:hover{transform:scale(1.1)}
-.music-fab.playing{animation:musicPulse 1.5s ease-in-out infinite}
-@keyframes musicPulse{0%,100%{box-shadow:0 4px 16px rgba(233,30,140,.4)}50%{box-shadow:0 4px 32px rgba(233,30,140,.8)}}
-.cfg-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 2rem);margin:1.25rem 1rem 0;padding:.875rem;border:1.5px dashed #f48fb1;background:transparent;border-radius:14px;color:#e91e8c;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:background .2s}
-.cfg-btn:hover{background:#fff0f5}
-.pwa-banner{background:#fff0f5;border:1px solid #fce4ec;border-radius:14px;padding:1rem;margin:1rem;display:none;gap:10px;align-items:center}
-.pwa-icon{font-size:28px;flex-shrink:0}
-.pwa-text p{font-size:13px;color:#555;line-height:1.5}
-.pwa-text strong{color:#c2185b}
-.pwa-close{margin-left:auto;background:none;border:none;font-size:18px;color:#ccc;cursor:pointer;flex-shrink:0}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,249,251,.95);backdrop-filter:blur(10px);border-top:1px solid #fce4ec;display:none;justify-content:space-around;padding:.5rem 0 calc(.5rem + env(safe-area-inset-bottom));z-index:40}
-.bottom-nav.visible{display:flex}
-.nav-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:.25rem .75rem;color:#ccc;font-size:10px;letter-spacing:.5px;transition:color .2s}
-.nav-btn.active,.nav-btn:hover{color:#e91e8c}
-.nav-btn span{font-size:22px;line-height:1}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
-.overlay.open{display:flex}
-.sheet{background:#fff;border-radius:24px 24px 0 0;padding:1.5rem 1.25rem 2.5rem;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;animation:slideUp .3s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.sheet-handle{width:40px;height:4px;background:#eee;border-radius:2px;margin:0 auto 1.25rem}
-.sheet h3{font-family:'Cormorant Garamond',serif;font-size:24px;color:#880e3f;text-align:center;margin-bottom:1.25rem}
-.sheet label{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#aaa;margin-bottom:5px;margin-top:14px}
-.sheet input,.sheet textarea{width:100%;border:1px solid #fce4ec;border-radius:10px;padding:10px 12px;font-size:15px;font-family:'DM Sans',sans-serif;color:#333;background:#fff;outline:none;resize:none;transition:border-color .2s}
-.sheet input:focus,.sheet textarea:focus{border-color:#f48fb1}
-.sheet-btns{display:flex;gap:10px;margin-top:1.5rem}
-.btn-cancel{flex:1;padding:.75rem;border:1px solid #eee;background:#fff;border-radius:12px;font-size:15px;color:#aaa;cursor:pointer;font-family:'DM Sans',sans-serif}
-.btn-save{flex:2;padding:.75rem;border:none;background:#e91e8c;border-radius:12px;font-size:15px;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s}
-.btn-save:hover{opacity:.9}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+.music-dedic{font-family:'Cormorant Garamond',serif;font-size:16px;color:#555;font-style:italic;line-height:1.5;margin-bottom:15px}
+.music-btn{display:inline-block;padding:8px 20px;background:#e91e8c;color:#fff;border-radius:20px;text-decoration:none;font-size:13px;font-weight:500}
+
+/* Nota: Os outros estilos originais (contador, quiz, envelope) continuam aqui... */
 </style>
 </head>
 <body>
-<div class="page" id="intro">
-  <div class="petals-bg" id="petals"></div>
-  <div style="text-align:center;margin-bottom:2rem;animation:fadeUp .8s ease">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:3px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:.5rem">para você</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:40px;color:#fff;font-weight:500" id="introName">Meu Amor</div>
-  </div>
-  <div class="envelope-wrap" id="envWrap" onclick="openEnvelope()">
-    <div class="envelope">
-      <div class="env-card">
-        <div class="env-card-text">Você é a pessoa mais especial do mundo pra mim ♥</div>
-      </div>
-      <div class="env-body">
-        <div class="env-flap"></div>
-        <div class="env-left"></div>
-        <div class="env-right"></div>
-        <div class="env-heart">♥</div>
-      </div>
-    </div>
-  </div>
-  <div class="intro-hint" id="introHint">toque no envelope</div>
+
+<!-- ... (O restante do seu HTML original vai aqui) ... -->
+
+<div class="music-section" id="sec-music">
+  <div class="sec-heading">✦ nossas músicas especiais ✦</div>
+  <div class="music-grid" id="musicGrid"></div>
 </div>
-<div class="page" id="album">
-  <div class="album-inner">
-    <div class="cover">
-      <span class="cover-hearts">♥ ♥ ♥</span>
-      <div class="cover-title" id="albumTitle">Nosso Álbum</div>
-      <div class="cover-sub" id="albumSub">Dia dos Namorados</div>
-    </div>
-    <div class="counter">
-      <div class="ctr-label">tempo juntos</div>
-      <div class="ctr-grid">
-        <div class="c-item"><span class="c-num" id="cY">0</span><span class="c-unit">anos</span></div>
-        <div class="c-item"><span class="c-num" id="cM">0</span><span class="c-unit">meses</span></div>
-        <div class="c-item"><span class="c-num" id="cD">0</span><span class="c-unit">dias</span></div>
-        <div class="c-item"><span class="c-num" id="cH">0</span><span class="c-unit">horas</span></div>
-      </div>
-      <div class="ctr-since">desde <span id="sinceLabel">—</span></div>
-    </div>
-    <div class="timeline-section" id="sec-timeline">
-      <div class="sec-heading">✦ nossa história ✦</div>
-      <div class="timeline" id="timeline"></div>
-    </div>
-    <div class="music-section" id="sec-music">
-      <div class="sec-heading">✦ nossas músicas especiais ✦</div>
-      <div class="music-grid" id="musicGrid"></div>
-    </div>
-    <div class="quiz-section" style="margin-top:1.75rem">
-      <div class="sec-heading">✦ você me conhece? ✦</div>
-      <div class="quiz-card">
-        <div class="quiz-q" id="quizQ"></div>
-        <div class="quiz-opts" id="quizOpts"></div>
-        <div class="quiz-result" id="quizResult"></div>
-        <button class="quiz-next" id="quizNext" onclick="nextQ()">próxima ♥</button>
-      </div>
-    </div>
-    <div class="secret-section" style="margin-top:1.75rem">
-      <div class="sec-heading">✦ mensagem secreta ✦</div>
-      <div class="secret-card">
-        <span class="secret-lock" onclick="revealSecret()">🔒</span>
-        <div class="secret-hint" id="secretHint">toque para revelar ♥</div>
-        <div class="secret-msg" id="secretMsg">
-          <div class="secret-text" id="secretText">"Você é o meu lar. Onde você estiver, é onde eu quero estar."</div>
-          <div class="secret-sig" id="secretSig">— para sempre seu ♥</div>
-        </div>
-      </div>
-    </div>
-    <button class="cfg-btn" onclick="openCfg()">⚙ personalizar álbum</button>
-    <div style="height:2rem"></div>
-  </div>
-</div>
-<nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn active" onclick="window.scrollTo({top:0,behavior:'smooth'});updateNavActive(this)"><span>🏠</span>início</button>
-  <button class="nav-btn" onclick="scrollToSection('sec-timeline');updateNavActive(this)"><span>📖</span>história</button>
-  <button class="nav-btn" onclick="scrollToSection('sec-music');updateNavActive(this)"><span>🎵</span>músicas</button>
-</nav>
-<button class="music-fab" id="musicFab" onclick="toggleMusic()">🎵</button>
+
+<!-- ... (Restante do código) ... -->
 
 <script>
+// Lista de Músicas
 const DEF_MUSIC = [
-  {title: "Nossa Canção", artist: "Artista 1", link: "https://www.youtube.com/watch?v=ID_DA_MUSICA_1"},
-  {title: "Primeiro Encontro", artist: "Artista 2", link: "https://www.youtube.com/watch?v=ID_DA_MUSICA_2"},
-  {title: "Música do nosso amor", artist: "Artista 3", link: "https://www.youtube.com/watch?v=ID_DA_MUSICA_3"},
-  {title: "Trilha Sonora", artist: "Artista 4", link: "https://www.youtube.com/watch?v=ID_DA_MUSICA_4"}
+  {title: "Certo Alguém", artist: "Lulu Santos", link: "https://youtu.be/4yUQN_UjdtY", dedic: "Dizem que a gente nunca sabe quando o destino vai cruzar o nosso caminho, mas com você foi diferente..."},
+  {title: "Mulher Maravilha", artist: "Zé Neto & Cristiano", link: "https://youtu.be/Fzmvv8fSyQs", dedic: "Às vezes eu paro para te observar e penso em como a sorte sorriu para mim..."},
+  {title: "Que Sorte a Nossa", artist: "Matheus & Kauan", link: "https://youtu.be/BkpqU3gdjlw", dedic: "Sabe aquela música que a gente ouve e parece que foi escrita para nós?..."},
+  {title: "Pra Sempre Com Você", artist: "Jorge & Mateus", link: "https://youtu.be/VWRkQARH-9o", dedic: "Olhando para os nossos dois anos de história, percebo que cada momento..."},
+  {title: "Na Hora da Raiva", artist: "Jorge & Mateus", link: "https://youtu.be/X8jD3F9PI7Q", dedic: "Entre os desentendimentos e as certezas, a maior delas é que eu sempre vou te escolher..."}
 ];
-const DEF_TL=[{date:"o nosso início",text:"O dia em que tudo mudou."}, {date:"hoje e sempre",text:"Construindo memórias."}];
-const DEF_QUIZ=[{q:"Qual é o meu lanche favorito?", opts:["Hamburguer","Brigadeiro","Batata frita","Sorvete"], ans: 0}];
-
-let cfg, timeline, quiz, ytPlayer=null, qIdx=0, answered=false;
-
-function load(){
-  try{cfg=JSON.parse(localStorage.getItem('v2_cfg'))||{}}catch(e){cfg={}}
-  try{timeline=JSON.parse(localStorage.getItem('v2_tl'))||DEF_TL}catch(e){timeline=[...DEF_TL]}
-  try{quiz=JSON.parse(localStorage.getItem('v3_quiz'))||DEF_QUIZ}catch(e){quiz=DEF_QUIZ}
-  cfg.name=cfg.name||'Meu Amor'; cfg.title=cfg.title||'Nosso Álbum'; cfg.date=cfg.date||'2024-02-03'; cfg.music=cfg.music||'r73ANL4ecnE';
-}
-
-function spawnPetals(){
-  const c=document.getElementById('petals');
-  for(let i=0;i<18;i++){ const p=document.createElement('div'); p.className='petal'; p.textContent=['🌸','❤️','💕','✨','🌹','💗','🌷'][Math.floor(Math.random()*7)]; p.style.left=Math.random()*100+'%'; p.style.animationDuration=(4+Math.random()*6)+'s'; p.style.animationDelay=(Math.random()*8)+'s'; c.appendChild(p); }
-}
-
-function openEnvelope(){
-  document.getElementById('envWrap').classList.add('open');
-  setTimeout(()=>{ document.getElementById('intro').classList.add('hidden'); document.getElementById('album').classList.add('show'); document.getElementById('bottomNav').classList.add('visible'); document.getElementById('musicFab').classList.add('visible'); applyUI(); startCounterLoop(); initAudio(); },1200);
-}
-
-function updateCounter(){
-  if(!cfg.date) return;
-  const start=new Date(cfg.date+'T00:00:00'); const ms=new Date()-start;
-  const d=Math.floor(ms/86400000); const y=Math.floor(d/365); const m=Math.floor((d%365)/30); const days=d%30; const h=Math.floor((ms%86400000)/3600000);
-  document.getElementById('cY').textContent=y; document.getElementById('cM').textContent=m; document.getElementById('cD').textContent=days; document.getElementById('cH').textContent=h;
-}
-
-function startCounterLoop(){ updateCounter(); setInterval(updateCounter,60000); }
 
 function renderMusic(){
-  const g=document.getElementById('musicGrid'); g.innerHTML='';
-  DEF_MUSIC.forEach((m)=>{ g.innerHTML+=`<div class="music-card"><span class="music-icon">🎵</span><div class="music-title">${m.title}</div><div class="music-art">${m.artist}</div><a href="${m.link}" target="_blank" class="music-btn">Ouvir agora</a></div>`; });
+  const g=document.getElementById('musicGrid');
+  g.innerHTML = DEF_MUSIC.map(m => `
+    <div class="music-card">
+      <div class="music-title">${m.title}</div>
+      <div class="music-art">${m.artist}</div>
+      <div class="music-dedic">${m.dedic}</div>
+      <a href="${m.link}" target="_blank" class="music-btn">Ouvir agora</a>
+    </div>
+  `).join('');
 }
 
-function renderTimeline(){
-  const c=document.getElementById('timeline'); c.innerHTML='';
-  timeline.forEach((t)=>{ c.innerHTML+=`<div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div>${t.date}</div><div class="tl-text">${t.text}</div></div></div>`; });
-}
-
-function renderQuiz(){
-  document.getElementById('quizQ').textContent=quiz[qIdx].q; const oc=document.getElementById('quizOpts'); oc.innerHTML='';
-  quiz[qIdx].opts.forEach((o,i)=>{ const b=document.createElement('button'); b.className='quiz-opt'; b.textContent=o; b.onclick=()=>answerQ(i,b); oc.appendChild(b); });
-}
-
-function answerQ(i,btn){
-  if(answered) return; answered=true;
-  if(i===quiz[qIdx].ans){ btn.classList.add('correct'); document.getElementById('quizResult').textContent='Acertou! 🥰'; }
-  else { btn.classList.add('wrong'); document.getElementById('quizResult').textContent='Quase! 😄'; }
-  document.getElementById('quizNext').style.display='block';
-}
-
-function nextQ(){ qIdx=(qIdx+1)%quiz.length; answered=false; renderQuiz(); document.getElementById('quizNext').style.display='none'; }
-function revealSecret(){ document.getElementById('secretMsg').classList.add('show'); document.getElementById('secretHint').style.display='none'; }
-function openCfg(){ document.getElementById('cfgName').value=cfg.name; document.getElementById('cfgTitle').value=cfg.title; document.getElementById('cfgDate').value=cfg.date; document.getElementById('cfgMusic').value=cfg.music; document.getElementById('cfgOverlay').classList.add('open'); }
-function closeCfg(){ document.getElementById('cfgOverlay').classList.remove('open'); }
-function saveCfg(){
-  cfg.name=document.getElementById('cfgName').value; cfg.title=document.getElementById('cfgTitle').value; cfg.date=document.getElementById('cfgDate').value; cfg.music=document.getElementById('cfgMusic').value;
-  localStorage.setItem('v2_cfg', JSON.stringify(cfg)); applyUI(); updateCounter(); closeCfg();
-}
-function applyUI(){ document.getElementById('introName').textContent=cfg.name; document.getElementById('albumTitle').textContent=cfg.title; }
-function initAudio(){
-  const tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api"; document.head.appendChild(tag);
-  window.onYouTubeIframeAPIReady=()=>{ ytPlayer=new YT.Player('musicFab',{videoId:cfg.music,events:{'onReady':(e)=>e.target.playVideo()}}); };
-}
-function toggleMusic(){ if(ytPlayer) ytPlayer.getPlayerState()===1?ytPlayer.pauseVideo():ytPlayer.playVideo(); }
-function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
-function updateNavActive(btn){ document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-window.onload=()=>{ load(); spawnPetals(); renderTimeline(); renderMusic(); renderQuiz(); };
+// Chame renderMusic() dentro do seu window.onload original
+window.onload = () => {
+    load();
+    spawnPetals();
+    renderTimeline();
+    renderQuiz();
+    renderMusic(); // <--- Adicionado aqui
+};
 </script>
 </body>
 </html>
