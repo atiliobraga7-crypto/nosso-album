@@ -122,6 +122,7 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
 /* Config button */
 .cfg-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 2rem);margin:1.25rem 1rem 0;padding:.875rem;border:1.5px dashed #f48fb1;background:transparent;border-radius:14px;color:#e91e8c;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:background .2s}
 .cfg-btn:hover{background:#fff0f5}
+.share-btn{background:linear-gradient(135deg,#fff0f5,#fce4ec);border-style:solid;border-color:#f48fb1}
 
 /* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,249,251,.95);backdrop-filter:blur(10px);border-top:1px solid #fce4ec;display:none;justify-content:space-around;padding:.5rem 0 calc(.5rem + env(safe-area-inset-bottom));z-index:40}
@@ -152,7 +153,31 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
 
 /* Hidden YT frame */
 #ytFrame{position:fixed;top:-9999px;left:-9999px;width:200px;height:150px;visibility:hidden;pointer-events:none}
+
+/* Share card (off-screen rendered) */
+#shareCard{position:fixed;top:-9999px;left:-9999px;width:390px;background:linear-gradient(160deg,#3d001e 0%,#0d0008 100%);border-radius:32px;padding:40px 32px 36px;font-family:'Cormorant Garamond',serif;color:#fff;z-index:-1}
+.sc-top{text-align:center;margin-bottom:28px}
+.sc-para{font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:6px}
+.sc-name{font-size:42px;font-weight:500;color:#fff;line-height:1.1;margin-bottom:4px}
+.sc-sub{font-size:12px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
+.sc-hearts{font-size:18px;letter-spacing:10px;color:#e91e8c;margin:18px 0}
+.sc-counter{display:flex;justify-content:center;gap:10px;margin-bottom:28px}
+.sc-c{background:rgba(255,255,255,.07);border-radius:14px;padding:12px 10px;min-width:72px;text-align:center}
+.sc-num{display:block;font-size:34px;color:#fff;line-height:1}
+.sc-unit{display:block;font-size:10px;color:#f48fb1;margin-top:3px;letter-spacing:.5px;font-family:'DM Sans',sans-serif}
+.sc-since{text-align:center;font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.3);margin-bottom:24px}
+.sc-songs{margin-bottom:24px}
+.sc-songs-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#f48fb1;text-align:center;margin-bottom:12px;font-family:'DM Sans',sans-serif}
+.sc-song{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+.sc-song-icon{font-size:18px}
+.sc-song-info{}
+.sc-song-title{font-size:16px;color:#fff;line-height:1.2}
+.sc-song-art{font-size:11px;color:#f48fb1;font-family:'DM Sans',sans-serif}
+.sc-quote{text-align:center;font-size:17px;font-style:italic;color:rgba(255,255,255,.7);line-height:1.6;padding:0 8px;margin-bottom:20px}
+.sc-footer{text-align:center;font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1.5px;text-transform:uppercase}
+.sc-footer span{color:#e91e8c}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -161,7 +186,8 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
   <div class="petals-bg" id="petals"></div>
   <div style="text-align:center;margin-bottom:2rem;animation:fadeUp .8s ease">
     <div style="font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:3px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:.5rem">para você</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:40px;color:#fff;font-weight:500" id="introName">Meu Amor</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:40px;color:#fff;font-weight:500" id="introName">Amanda Dorneles</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:15px;color:rgba(255,255,255,.35);margin-top:.5rem;letter-spacing:1px;">de Atilio Braga ♥</div>
   </div>
   <div class="envelope-wrap" id="envWrap" onclick="openEnvelope()">
     <div class="envelope">
@@ -187,6 +213,8 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
       <span class="cover-hearts">♥ ♥ ♥</span>
       <div class="cover-title" id="albumTitle">Nosso Álbum</div>
       <div class="cover-sub" id="albumSub">Dia dos Namorados</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#c2185b;margin-top:.6rem;font-style:italic;" id="coverName">Amanda Dorneles</div>
+      <div style="font-size:12px;color:#bbb;letter-spacing:1.5px;margin-top:.3rem;font-family:'DM Sans',sans-serif;">com amor, Atilio Braga</div>
     </div>
 
     <!-- Counter -->
@@ -232,11 +260,39 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
         <div class="secret-hint" id="secretHint">toque para revelar ♥</div>
         <div class="secret-msg" id="secretMsg">
           <div class="secret-text" id="secretText">"Você é o meu lar. Onde você estiver, é onde eu quero estar."</div>
-          <div class="secret-sig" id="secretSig">— para sempre seu ♥</div>
+          <div class="secret-sig" id="secretSig">— Atilio Braga, para sempre seu ♥</div>
         </div>
       </div>
     </div>
 
+
+    <!-- Share card (rendered off-screen by html2canvas) -->
+    <div id="shareCard">
+      <div class="sc-top">
+        <div class="sc-para">para você</div>
+        <div class="sc-name" id="sc-name">Amanda Dorneles</div>
+        <div class="sc-sub">nosso álbum ♥</div>
+      </div>
+      <div class="sc-hearts" style="text-align:center">♥ ♥ ♥</div>
+      <div class="sc-counter">
+        <div class="sc-c"><span class="sc-num" id="sc-cY">0</span><span class="sc-unit">anos</span></div>
+        <div class="sc-c"><span class="sc-num" id="sc-cM">0</span><span class="sc-unit">meses</span></div>
+        <div class="sc-c"><span class="sc-num" id="sc-cD">0</span><span class="sc-unit">dias</span></div>
+        <div class="sc-c"><span class="sc-num" id="sc-cH">0</span><span class="sc-unit">horas</span></div>
+      </div>
+      <div class="sc-since" id="sc-since">juntos desde —</div>
+      <div class="sc-songs">
+        <div class="sc-songs-title">nossas músicas</div>
+        <div id="sc-songs-list"></div>
+      </div>
+      <div class="sc-quote">"Você é o meu lar. Onde você estiver, é onde eu quero estar."</div>
+      <div class="sc-footer">de <span>Atilio Braga</span> com ♥ pra você</div>
+    </div>
+
+    <!-- Share button -->
+    <button class="cfg-btn share-btn" onclick="generateShareCard()" id="shareBtn">
+      <span id="shareBtnIcon">📸</span> <span id="shareBtnText">salvar cartão para compartilhar</span>
+    </button>
     <button class="cfg-btn" onclick="openCfg()">⚙ personalizar álbum</button>
     <div style="height:2rem"></div>
   </div>
@@ -261,7 +317,7 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
     <div class="sheet-handle"></div>
     <h3>Personalizar Álbum</h3>
     <label>Nome dela</label>
-    <input type="text" id="cfgName" placeholder="Meu Amor"/>
+    <input type="text" id="cfgName" placeholder="Amanda Dorneles"/>
     <label>Título do álbum</label>
     <input type="text" id="cfgTitle" placeholder="Nosso Álbum"/>
     <label>Data de início do relacionamento</label>
@@ -327,7 +383,7 @@ function load() {
   try { cfg = JSON.parse(localStorage.getItem('v2_cfg')) || {}; } catch(e) { cfg = {}; }
   try { timeline = JSON.parse(localStorage.getItem('v2_tl')) || DEF_TL; } catch(e) { timeline = [...DEF_TL]; }
   try { quiz = JSON.parse(localStorage.getItem('v3_quiz')) || DEF_QUIZ; } catch(e) { quiz = DEF_QUIZ; }
-  cfg.name  = cfg.name  || 'Meu Amor';
+  cfg.name  = cfg.name  || 'Amanda Dorneles';
   cfg.title = cfg.title || 'Nosso Álbum';
   cfg.date  = cfg.date  || '2024-02-03';
   cfg.music = cfg.music || 'r73ANL4ecnE';
@@ -518,6 +574,8 @@ function saveCfg() {
 function applyUI() {
   document.getElementById('introName').textContent  = cfg.name;
   document.getElementById('albumTitle').textContent = cfg.title;
+  const cn = document.getElementById('coverName');
+  if (cn) cn.textContent = cfg.name;
 }
 
 /* ── AUDIO ── */
@@ -613,6 +671,86 @@ function setBackground(idx) {
 
   cfg.music = videoId;
   playTrackAsBackground(videoId);
+}
+
+/* ── SHARE CARD ── */
+function updateShareCard() {
+  // Name
+  document.getElementById('sc-name').textContent = cfg.name || 'Amanda Dorneles';
+  // Counter values (copy from main counter)
+  ['cY','cM','cD','cH'].forEach(id => {
+    const el = document.getElementById('sc-' + id);
+    if (el) el.textContent = document.getElementById(id).textContent;
+  });
+  // Since label
+  const since = document.getElementById('sinceLabel').textContent;
+  document.getElementById('sc-since').textContent = 'juntos desde ' + since;
+  // Songs list (first 3)
+  const list = document.getElementById('sc-songs-list');
+  list.innerHTML = '';
+  DEF_MUSIC.slice(0, 3).forEach(m => {
+    list.innerHTML += `<div class="sc-song"><span class="sc-song-icon">🎵</span><div class="sc-song-info"><div class="sc-song-title">${m.title}</div><div class="sc-song-art">${m.artist}</div></div></div>`;
+  });
+}
+
+function generateShareCard() {
+  const btn = document.getElementById('shareBtn');
+  document.getElementById('shareBtnIcon').textContent = '⏳';
+  document.getElementById('shareBtnText').textContent = 'gerando cartão...';
+  btn.disabled = true;
+
+  updateShareCard();
+
+  const card = document.getElementById('shareCard');
+  // Temporarily make visible off-screen for rendering
+  card.style.top = '-9999px';
+  card.style.left = '0px';
+  card.style.zIndex = '9999';
+
+  setTimeout(() => {
+    html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+      width: 390,
+      windowWidth: 390
+    }).then(canvas => {
+      card.style.top = '-9999px';
+      card.style.left = '-9999px';
+      card.style.zIndex = '-1';
+
+      // Try native share API first (mobile)
+      canvas.toBlob(blob => {
+        if (navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob],'album.png',{type:'image/png'})]})) {
+          navigator.share({
+            files: [new File([blob], 'nosso-album.png', {type: 'image/png'})],
+            title: 'Nosso Álbum ♥'
+          }).catch(() => downloadFallback(canvas));
+        } else {
+          downloadFallback(canvas);
+        }
+        document.getElementById('shareBtnIcon').textContent = '✅';
+        document.getElementById('shareBtnText').textContent = 'cartão salvo! ♥';
+        setTimeout(() => {
+          document.getElementById('shareBtnIcon').textContent = '📸';
+          document.getElementById('shareBtnText').textContent = 'salvar cartão para compartilhar';
+          btn.disabled = false;
+        }, 2500);
+      }, 'image/png');
+    }).catch(() => {
+      document.getElementById('shareBtnIcon').textContent = '📸';
+      document.getElementById('shareBtnText').textContent = 'salvar cartão para compartilhar';
+      btn.disabled = false;
+    });
+  }, 100);
+}
+
+function downloadFallback(canvas) {
+  const a = document.createElement('a');
+  a.download = 'nosso-album.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
 }
 
 /* ── BOOT ── */
