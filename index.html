@@ -111,6 +111,9 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
 .secret-msg.show{display:block;animation:fadeIn .6s ease}
 .secret-text{font-family:'Cormorant Garamond',serif;font-size:20px;color:#880e3f;font-style:italic;line-height:1.65}
 .secret-sig{font-size:13px;color:#e91e8c;margin-top:.75rem}
+.secret-again{display:none;margin-top:14px;padding:.6rem 1.25rem;border:1.5px solid #f48fb1;background:transparent;border-radius:20px;color:#e91e8c;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:.5px;transition:all .2s}
+.secret-again:hover{background:#fff0f5}
+.secret-again.show{display:inline-block;animation:fadeIn .4s ease}
 
 /* FAB music button */
 .music-fab{position:fixed;bottom:80px;right:18px;width:50px;height:50px;border-radius:50%;background:#e91e8c;border:none;color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(233,30,140,.4);z-index:50;display:none;align-items:center;justify-content:center;transition:transform .2s}
@@ -259,9 +262,10 @@ body{font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;background:#0d
         <span class="secret-lock" id="secretLock" onclick="revealSecret()">🔒</span>
         <div class="secret-hint" id="secretHint">toque para revelar ♥</div>
         <div class="secret-msg" id="secretMsg">
-          <div class="secret-text" id="secretText">"Você é o meu lar. Onde você estiver, é onde eu quero estar."</div>
+          <div class="secret-text" id="secretText"></div>
           <div class="secret-sig" id="secretSig">— Atilio Braga, para sempre seu ♥</div>
         </div>
+        <button class="secret-again" id="secretAgain" onclick="revealSecret()">outra mensagem ♥</button>
       </div>
     </div>
 
@@ -372,17 +376,32 @@ const DEF_TL = [
 ];
 
 const DEF_QUIZ = [
-  {q: "Qual é o meu lanche favorito?", opts: ["Hamburguer","Brigadeiro","Batata frita","Sorvete"], ans: 0}
+  {q: "O que o Atilio pensa primeiro quando acorda?", opts: ["Em mandar bom dia pra Amanda","No café da manhã","No trabalho","Em voltar a dormir"], ans: 0},
+  {q: "Qual é o superpoder oficial da Amanda?", opts: ["Deixar o Atilio bobo só de olhar","Invisibilidade","Voar","Ler mentes"], ans: 0},
+  {q: "Se Atilio pudesse escolher um lugar pra estar agora, qual seria?", opts: ["Em qualquer lugar, perto da Amanda","Na praia sozinho","No trabalho","Jogando videogame"], ans: 0},
+  {q: "O que faz o coração do Atilio bater mais forte?", opts: ["O sorriso da Amanda","Notificação de salário","Final de jogo apertado","Cheiro de comida"], ans: 0},
+  {q: "Na visão do Atilio, qual é o lugar mais bonito do mundo?", opts: ["Onde a Amanda está","Paris","A praia","Sua própria cama"], ans: 0}
+];
+
+const SECRET_MESSAGES = [
+  {text: "\"Você é o meu lar. Onde você estiver, é onde eu quero estar.\"", sig: "— Atilio Braga, para sempre seu ♥"},
+  {text: "\"De todas as coisas boas que aconteceram na minha vida, você é a melhor delas.\"", sig: "— Atilio Braga, seu pra sempre ♥"},
+  {text: "\"Eu olho pra você e penso: como eu tive tanta sorte assim?\"", sig: "— Atilio Braga, todo seu ♥"},
+  {text: "\"Com você, até os dias comuns parecem especiais.\"", sig: "— Atilio Braga, com amor ♥"},
+  {text: "\"Se eu pudesse escolher de novo, escolheria você em todas as vidas.\"", sig: "— Atilio Braga, seu eternamente ♥"},
+  {text: "\"Você é o motivo do meu sorriso bobo no meio do dia.\"", sig: "— Atilio Braga, apaixonado ♥"},
+  {text: "\"Meu lugar favorito no mundo é ao seu lado.\"", sig: "— Atilio Braga, sempre seu ♥"},
+  {text: "\"Eu te amo nos detalhes, nos silêncios e em cada 'eu te amo' que eu ainda vou dizer.\"", sig: "— Atilio Braga, seu para sempre ♥"}
 ];
 
 /* ── STATE ── */
-let cfg = {}, timeline = [], quiz = [], ytPlayer = null, qIdx = 0, answered = false;
+let cfg = {}, timeline = [], quiz = [], ytPlayer = null, qIdx = 0, answered = false, lastSecretIdx = -1;
 
 /* ── INIT ── */
 function load() {
   try { cfg = JSON.parse(localStorage.getItem('v2_cfg')) || {}; } catch(e) { cfg = {}; }
   try { timeline = JSON.parse(localStorage.getItem('v2_tl')) || DEF_TL; } catch(e) { timeline = [...DEF_TL]; }
-  try { quiz = JSON.parse(localStorage.getItem('v3_quiz')) || DEF_QUIZ; } catch(e) { quiz = DEF_QUIZ; }
+  try { quiz = JSON.parse(localStorage.getItem('v4_quiz')) || DEF_QUIZ; } catch(e) { quiz = DEF_QUIZ; }
   cfg.name  = cfg.name  || 'Amanda Dorneles';
   cfg.title = cfg.title || 'Nosso Álbum';
   cfg.date  = cfg.date  || '2024-02-03';
@@ -534,9 +553,25 @@ function nextQ() {
 
 /* ── SECRET ── */
 function revealSecret() {
+  // pick a random message different from the last one shown
+  let idx;
+  if (SECRET_MESSAGES.length === 1) {
+    idx = 0;
+  } else {
+    do {
+      idx = Math.floor(Math.random() * SECRET_MESSAGES.length);
+    } while (idx === lastSecretIdx);
+  }
+  lastSecretIdx = idx;
+  const msg = SECRET_MESSAGES[idx];
+
+  document.getElementById('secretText').textContent = msg.text;
+  document.getElementById('secretSig').textContent = msg.sig;
+
   document.getElementById('secretMsg').classList.add('show');
   document.getElementById('secretHint').style.display = 'none';
   document.getElementById('secretLock').style.display = 'none';
+  document.getElementById('secretAgain').classList.add('show');
 }
 
 /* ── CONFIG ── */
